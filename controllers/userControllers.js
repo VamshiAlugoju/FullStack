@@ -1,6 +1,12 @@
 // const { emit } = require("nodemon");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+
+function generateToken(id)
+{
+    return jwt.sign({userId:id},"secretkey")
+}
 
 exports.postUser = async (req,res,next)=>{
      
@@ -46,7 +52,7 @@ exports.loginUser = async(req,res,next)=>{
             }
             if(result)
             {
-             res.send({message:"logged in successfully"});
+             res.send({message:"logged in successfully",token:generateToken(user.id)});
             }
             else{
                 res.status(401).send({message:"password is not matching"});
