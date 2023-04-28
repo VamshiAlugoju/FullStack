@@ -7,13 +7,14 @@ const sequelize = require("./util/database")
 // const { urlencoded } = require("body-parser");
 
 const userRoutes = require("./routes/user");
+const expenseRoutes = require("./routes/expense");
 
 app.use(bodyparser.json({extended :false}))
 app.use(cors());
  
 
-
 app.use("/users",userRoutes)
+app.use("/Expenses",expenseRoutes)
 
 sequelize.sync()
 .then(result=>{
