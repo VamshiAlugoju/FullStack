@@ -1,4 +1,5 @@
-const { emit } = require("nodemon");
+// const { emit } = require("nodemon");
+const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
 exports.postUser = async (req,res,next)=>{
@@ -9,12 +10,13 @@ exports.postUser = async (req,res,next)=>{
         {
           return res.status(400).send("please fill the fields");
         }
-    
-        const result = await User.create({
-            name,email,password
-        })   
-        
-        res.send("ok");
+       
+        bcrypt.hash(password,10,async(err,hash)=>{
+            const result = await User.create({
+                name,email,password:hash
+            })   
+            res.send("ok");
+        })
     }
    catch{
        res.status(500).send({ message : "user already exist with Email"});
@@ -32,18 +34,31 @@ exports.loginUser = async(req,res,next)=>{
    }
    
    try{
- 
-      let user =  await User.findOne({where:{email:email}});
-
-     if(user.password === password)
-      res.send({message:"logged in successfully"});
-     else{
-        res.status(500).send({message:"password is not matching"});
-     }
-
+     let user =  await User.findOne({where:{email:email}});
+    
+      if(user)
+      {
+          bcrypt.compare(password,user.password,(err,result)=>{
+           
+            if(err)
+            {
+                throw new Error("something went wrong")
+            }
+            if(result)
+            {
+             res.send({message:"logged in successfully"});
+            }
+            else{
+                res.status(401).send({message:"password is not matching"});
+            }
+          })
+      }
+      else
+        throw new Error("username is not found");
    }
    catch(err){
-    res.status(400).send({message:"email is not found"});
+      err = err.toString();
+    res.status(404).json({message:err});
    }
 }
 
