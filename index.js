@@ -12,13 +12,15 @@ function signUp(e)
   axios.post("http://localhost:3000/users/Signup",payLoad)
   .then(res=>{
     console.log(res);
-    window.location.pathname("./login.html")
+    window.location.assign("./login.html")
   })
   .catch(err=>{
-    alert(err.response.data.message);
+    alert(err);
     // console.log(err.response.data)
   })
 }
+
+
 
 async function login(e)
 {
@@ -32,11 +34,12 @@ async function login(e)
     try{
       
        let result = await axios.post("http://localhost:3000/users/Login",payLoad);
-        // alert(result.response )
-        alert(result.data.message)
+        window.location.assign("./expense/expense.html")
+        // alert(result.data.message)
     }
     catch(err){
         // alert(err.response)
          alert(err.response.data.message)
+        console.log(err)
     }
 }
