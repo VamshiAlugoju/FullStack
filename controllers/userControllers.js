@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
-function generateToken(id)
+function generateToken(id )
 {
     return jwt.sign({userId:id},"secretkey")
 }
@@ -68,8 +68,15 @@ exports.loginUser = async(req,res,next)=>{
    }
 }
 
-
-
+exports.ispremiumUser = (req,res)=>{
+    let user = req.user;
+    let istrue = user.ispremiumUser;
+    console.log(">>>>>>>>>>",istrue)
+    if(istrue)
+    res.json({premium:istrue});
+    else
+    res.json({premium:false});
+}
 
 function isinvalidString(string)
 {

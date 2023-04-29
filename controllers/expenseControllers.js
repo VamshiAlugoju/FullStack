@@ -4,7 +4,7 @@ const Expense =  require("../models/expense");
 exports.getExpenses = async(req,res,next)=>{
 
     const Id = req.user.id;
-   console.log(req.user.id)
+    
     try{
       let data = await Expense.findAll({where:{userid:Id}});
       res.send(data);
@@ -14,7 +14,7 @@ exports.getExpenses = async(req,res,next)=>{
       res.send("no Items found add some");
     }
  
-}
+}   
 
 exports.postExpense = async(req,res,next)=>{
    
@@ -41,6 +41,10 @@ exports.deleteExpense = async(req,res,next)=>{
     const Id = req.params.Id
     let userId = req.user.id;
     try{
+        if(userId !== Id)
+        {
+            throw new Error()
+        }
         await Expense.destroy({where:{id:Id,userId}});
         res.send("deleted");
     }
