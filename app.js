@@ -15,6 +15,7 @@ const userauthentication = require("./middleware/Authenticate");
 const userRoutes = require("./routes/user");
 const expenseRoutes = require("./routes/expense");
 const premimuRoutes = require("./routes/purchase");
+const passwordRoutes = require("./routes/password");
 
 app.use(bodyparser.json({extended :false}))
 app.use(cors());
@@ -28,7 +29,7 @@ Orders.belongsTo(User);
 app.use("/users",userRoutes)
 app.use("/Expenses",userauthentication.Authenticate,expenseRoutes)
 app.use("/purchase",premimuRoutes);
-
+app.use("/password",passwordRoutes);
 
 sequelize.sync()
 .then(result=>{
