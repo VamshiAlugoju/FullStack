@@ -47,13 +47,10 @@ exports.loginUser = async(req,res,next)=>{
           bcrypt.compare(password,user.password,(err,result)=>{
            
             if(err)
-            {
                 throw new Error("something went wrong")
-            }
+        
             if(result)
-            {
              res.send({message:"logged in successfully",token:generateToken(user.id)});
-            }
             else{
                 res.status(401).send({message:"password is not matching"});
             }
@@ -71,7 +68,6 @@ exports.loginUser = async(req,res,next)=>{
 exports.ispremiumUser = (req,res)=>{
     let user = req.user;
     let istrue = user.ispremiumUser;
-    console.log(">>>>>>>>>>",istrue)
     if(istrue)
     res.json({premium:istrue});
     else

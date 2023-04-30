@@ -1,5 +1,5 @@
 const Expense =  require("../models/expense");
-
+const LeaderBoard = require("../models/leaderBoard");
 
 exports.getExpenses = async(req,res,next)=>{
 
@@ -24,13 +24,24 @@ exports.postExpense = async(req,res,next)=>{
     {
         return res.status(500).json({message:"please enter fields"});
     }
-    // let userId = req.user.id
     let userId = req.user.id;
     try{
       let result = await   Expense.create({amount,description,category,userId});
+       
+      let LeaderBoarddata = await LeaderBoard.findOne({where:{userId:req.user.id}})
+      if(LeaderBoarddata)
+      {
+         let Amount = parseInt(LeaderBoarddata.TotalAmount )+ parseInt(amount);
+         console.log(Amount)
+         await LeaderBoard.update({TotalAmount:Amount},{where:{userId}});
+      }
+      else{
+               await  LeaderBoard.create({TotalAmount:amount,Name:req.user.name,userId:req.user.id})
+      }
         res.json(result);
     }
     catch(err){
+        console.log(err)
        res.status(500).send({message:"cannot add items"});
     }
    
@@ -41,14 +52,17 @@ exports.deleteExpense = async(req,res,next)=>{
     const Id = req.params.Id
     let userId = req.user.id;
     try{
-        if(userId !== Id)
-        {
-            throw new Error()
-        }
+        let data = await Expense.findOne({where:{id:Id}})
+        let LeaderBoarddata = await LeaderBoard.findOne({where:{userId:req.user.id}})
+
+        deleteAmount =  parseInt(LeaderBoarddata.TotalAmount) - parseInt(data.amount);
+
+        await  LeaderBoard.update({TotalAmount:deleteAmount},{where:{userId}})
         await Expense.destroy({where:{id:Id,userId}});
         res.send("deleted");
     }
     catch(err){
+        console.log(err)
         res.status(500).send("cannot delete item");
     }
  

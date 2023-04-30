@@ -8,6 +8,7 @@ const sequelize = require("./util/database")
 const User = require("./models/user");
 const Expenses = require("./models/expense");
 const Orders = require("./models/order");
+const LeaderBoard = require("./models/leaderBoard");
 
 const userauthentication = require("./middleware/Authenticate");
 
@@ -22,6 +23,8 @@ User.hasMany(Expenses);
 Expenses.belongsTo(User);
 User.hasMany(Orders);
 Orders.belongsTo(User);
+User.hasOne(LeaderBoard);
+LeaderBoard.belongsTo(User);
 
 
 app.use("/users",userRoutes)

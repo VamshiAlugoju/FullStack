@@ -9,4 +9,7 @@ router.get("/premiumMembership",Authenticate.Authenticate,purchaseControllers.ge
 router.post("/premiumMembership/UpdateTransaction", Authenticate.Authenticate, purchaseControllers.updateTransactionStatus)
 
 router.post("/premiumMembership/StatusFail",Authenticate.Authenticate, purchaseControllers.StatusFail)
+
+router.get("/premiumMembership/LeaderBoard",Authenticate.Authenticate,purchaseControllers.LeaderBoard);
+
 module.exports = router;

@@ -1,7 +1,9 @@
 
 const Order = require("../models/order");
+const User = require("../models/user");
 const Razorpay = require("razorpay");
-const { json } = require("body-parser");
+const LBoard = require("../models/leaderBoard");
+ 
 
 
 
@@ -77,6 +79,16 @@ exports.StatusFail = async (req,res)=>{
        
         res.status(401).json(JSON.stringify(err));
     }
+}
+
+  exports.LeaderBoard = async (req,res)=>{
+      
+    let data =  await LBoard.findAll({
+      order: [
+        ['TotalAmount', 'DESC']
+      ]
+    })
      
     
-}
+    res.json(data);
+  }
