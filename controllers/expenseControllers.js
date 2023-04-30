@@ -1,5 +1,6 @@
 const Expense =  require("../models/expense");
 const LeaderBoard = require("../models/leaderBoard");
+const sequelize = require("../util/database");
 
 exports.getExpenses = async(req,res,next)=>{
 
@@ -17,7 +18,8 @@ exports.getExpenses = async(req,res,next)=>{
 }   
 
 exports.postExpense = async(req,res,next)=>{
-   
+     
+    const t = await sequelize.transaction();
     const {amount,description,category} = req.body;
 
     if(isinvalidString(amount) || isinvalidString(description) || isinvalidString(category))
@@ -26,21 +28,14 @@ exports.postExpense = async(req,res,next)=>{
     }
     let userId = req.user.id;
     try{
-      let result = await   Expense.create({amount,description,category,userId});
-       
-      let LeaderBoarddata = await LeaderBoard.findOne({where:{userId:req.user.id}})
-      if(LeaderBoarddata)
-      {
-         let Amount = parseInt(LeaderBoarddata.TotalAmount )+ parseInt(amount);
-         console.log(Amount)
-         await LeaderBoard.update({TotalAmount:Amount},{where:{userId}});
-      }
-      else{
-               await  LeaderBoard.create({TotalAmount:amount,Name:req.user.name,userId:req.user.id})
-      }
+      let result = await   Expense.create({amount,description,category,userId},{transaction:t});
+      let TAmount = parseInt(req.user.TotalAmount)+parseInt(amount);
+      await req.user.update({TotalAmount:TAmount},{transaction:t}) 
+       await t.commit();
         res.json(result);
     }
     catch(err){
+       await t.rollback();
         console.log(err)
        res.status(500).send({message:"cannot add items"});
     }
@@ -48,20 +43,22 @@ exports.postExpense = async(req,res,next)=>{
 }
 
 exports.deleteExpense = async(req,res,next)=>{
-
+    
+    const t = await sequelize.transaction()
     const Id = req.params.Id
     let userId = req.user.id;
     try{
         let data = await Expense.findOne({where:{id:Id}})
-        let LeaderBoarddata = await LeaderBoard.findOne({where:{userId:req.user.id}})
 
-        deleteAmount =  parseInt(LeaderBoarddata.TotalAmount) - parseInt(data.amount);
-
-        await  LeaderBoard.update({TotalAmount:deleteAmount},{where:{userId}})
-        await Expense.destroy({where:{id:Id,userId}});
+        deleteAmount =  parseInt(req.user.TotalAmount) - parseInt(data.amount);
+        await req.user.update({TotalAmount:deleteAmount},{transaction:t});
+        
+        await Expense.destroy({where:{id:Id},transaction:t})
+       await t.commit();
         res.send("deleted");
     }
     catch(err){
+        await t.rollback();
         console.log(err)
         res.status(500).send("cannot delete item");
     }

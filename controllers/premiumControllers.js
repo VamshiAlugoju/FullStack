@@ -83,7 +83,8 @@ exports.StatusFail = async (req,res)=>{
 
   exports.LeaderBoard = async (req,res)=>{
       
-    let data =  await LBoard.findAll({
+    let data =  await User.findAll({
+      attributes:['name','TotalAmount'],
       order: [
         ['TotalAmount', 'DESC']
       ]

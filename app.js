@@ -23,8 +23,6 @@ User.hasMany(Expenses);
 Expenses.belongsTo(User);
 User.hasMany(Orders);
 Orders.belongsTo(User);
-User.hasOne(LeaderBoard);
-LeaderBoard.belongsTo(User);
 
 
 app.use("/users",userRoutes)
