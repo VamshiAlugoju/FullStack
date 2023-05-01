@@ -39,7 +39,7 @@ exports.loginUser = async (req, res, next) => {
   if (isinvalidString(email) || isinvalidString(password)) {
     return res.status(400).send("please fill the fields");
   }
-
+  console.log(">>>>>>>>>>>.user><<<<<<<<<<<<<")
   try {
     let user = await User.findOne({ where: { email: email } });
 

@@ -1,6 +1,64 @@
 const Expense =  require("../models/expense");
 const LeaderBoard = require("../models/leaderBoard");
 const sequelize = require("../util/database");
+const Aws = require("aws-sdk");
+require('dotenv').config();
+
+function uploadToS3(filename,data)
+{  
+
+    try{
+        const BUCKET_NAME = process.env.BUCKET_NAME;
+        const IAM_USER_KEY = process.env.IAM_USER_KEY;
+        const IAM_USER_SECRET = process.env.IAM_USER_SECRET;
+       
+        let s3bucket = new Aws.S3({
+            accessKeyId:IAM_USER_KEY,
+            secretAccessKey:IAM_USER_SECRET
+        });
+          
+            let params = {
+                Bucket:BUCKET_NAME,
+                Key:filename,
+                Body:data,
+                ACL:'public-read'
+            }
+          
+        return new Promise((resolve,reject)=>{
+    
+            s3bucket.upload(params,(err,s3response)=>{
+                if(err){
+                    reject(err);
+                }
+                else{
+                    resolve(s3response.Location)
+                }
+            })
+        })
+    }
+    catch(err)
+    {
+       console.log(err);
+       return err;
+    }
+   
+   
+}
+
+exports.downloadReport = async(req,res)=>{
+
+    try{
+        let expenses = await Expense.findAll({where:{id:req.user.id}})
+        expenses = JSON.stringify(expenses);
+        let fileName = `Expense${req.user.id}${new Date()}.txt`;
+        let location = await uploadToS3(fileName,expenses);
+        await req.user.createForgotHistory({location});
+        res.json({fileURL:location});
+    }
+    catch(err){
+        res.status(500).json({err})
+    }  
+}
 
 exports.getExpenses = async(req,res,next)=>{
 

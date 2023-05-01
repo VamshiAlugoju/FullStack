@@ -11,6 +11,7 @@ const Expenses = require("./models/expense");
 const Orders = require("./models/order");
 const LeaderBoard = require("./models/leaderBoard");
 const ForgotRequests = require("./models/ForgotRequests");
+const ReportHistory = require("./models/ReportHistory");
 
 const userauthentication = require("./middleware/Authenticate");
 
@@ -29,7 +30,8 @@ User.hasMany(Orders);
 Orders.belongsTo(User);
 User.hasMany(ForgotRequests);
 ForgotRequests.belongsTo(User);
-
+User.hasMany(ReportHistory);
+ReportHistory.belongsTo(User);
 
 app.use("/users",userRoutes)
 app.use("/Expenses",userauthentication.Authenticate,expenseRoutes)
