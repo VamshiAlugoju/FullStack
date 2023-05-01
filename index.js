@@ -34,6 +34,8 @@ async function login(e)
     try{
       
        let result = await axios.post("http://localhost:3000/users/Login",payLoad);
+       console.log(result.data.token)
+       localStorage.setItem("token",result.data.token)
         window.location.assign("./expense/expense.html")
         // alert(result.data.message)
     }
