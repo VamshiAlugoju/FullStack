@@ -67,11 +67,12 @@ exports.getExpenses = async(req,res,next)=>{
     let totalItems;
     let limitPerPage ;
     if(req.query.limit)
-    {
+    {  
         limitPerPage = parseInt(req.query.limit)
+        console.log(page,req.query.limit)
     }
     else
-      limitPerPage = 2;
+    limitPerPage = 2;
     
     try{
       totalItems = await Expense.count({
@@ -80,11 +81,13 @@ exports.getExpenses = async(req,res,next)=>{
         }
        })
        totalItems = parseInt(totalItems);
-      let data = await Expense.findAll({where:{userid:Id},
+       let data = await Expense.findAll({where:{userid:Id},
         offset:(page-1)*limitPerPage,
         limit:limitPerPage
     });
+   
       
+    
       res.json({data,Pagination:{
          currentPage:page,
          nextPage:page+1,

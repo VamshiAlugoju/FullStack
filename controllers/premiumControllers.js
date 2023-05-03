@@ -42,7 +42,8 @@ exports.getOrderID = async (req,res)=>{
 
 exports.updateTransactionStatus = async (req,res)=>{
       
-    const {order_id,payment_id} = req.body;
+  const {order_id,payment_id} = req.body;
+  console.log(order_id,payment_id)
     try{
         let order = await Order.findOne({where:{orderId:order_id}});
         if(!order)

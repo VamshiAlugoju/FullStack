@@ -35,11 +35,10 @@ exports.postUser = async (req, res, next) => {
 
 exports.loginUser = async (req, res, next) => {
   const { email, password } = req.body;
-
+  console.log(email.password);
   if (isinvalidString(email) || isinvalidString(password)) {
     return res.status(400).send("please fill the fields");
   }
-  console.log(">>>>>>>>>>>.user><<<<<<<<<<<<<")
   try {
     let user = await User.findOne({ where: { email: email } });
 

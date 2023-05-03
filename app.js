@@ -34,8 +34,13 @@ const certificate = fs.readFileSync("cert.pem");
 app.use(bodyparser.json({extended :false}))
 app.use(cors());
 app.use(express.static(path.join(__dirname,"public")));
-app.use(helmet());
-app.use(morgan("combined",{stream:accessLogStream}));
+// app.use(helmet());
+// app.use(morgan("combined",{stream:accessLogStream}));
+app.use(function(req, res, next) { 
+    res.setHeader( 'Content-Security-Policy', "script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net" ); 
+    next(); 
+  })
+  
 
 User.hasMany(Expenses);
 Expenses.belongsTo(User);
@@ -50,6 +55,10 @@ app.use("/users",userRoutes)
 app.use("/Expenses",userauthentication.Authenticate,expenseRoutes)
 app.use("/purchase",premimuRoutes);
 app.use("/password",passwordRoutes);
+app.use("/",(req,res)=>{
+    console.log(req.url)
+    res.sendFile(path.join(__dirname,`public/${req.url}`));
+})
 
 
 sequelize.sync()
