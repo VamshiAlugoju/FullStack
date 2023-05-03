@@ -41,15 +41,15 @@ function uploadToS3(filename,data)
        console.log(err);
        return err;
     }
-   
-   
 }
 
 exports.downloadReport = async(req,res)=>{
 
     try{
-        let expenses = await Expense.findAll({where:{id:req.user.id}})
+
+        let expenses = await Expense.findAll({where:{userID:req.user.id}})
         expenses = JSON.stringify(expenses);
+        console.log(expenses);
         let fileName = `Expense${req.user.id}${new Date()}.txt`;
         let location = await uploadToS3(fileName,expenses);
         await req.user.createForgotHistory({location});
@@ -63,10 +63,35 @@ exports.downloadReport = async(req,res)=>{
 exports.getExpenses = async(req,res,next)=>{
 
     const Id = req.user.id;
+    const page = parseInt(req.query.page)
+    let totalItems;
+    let limitPerPage ;
+    if(req.query.limit)
+    {
+        limitPerPage = parseInt(req.query.limit)
+    }
+    else
+      limitPerPage = 2;
     
     try{
-      let data = await Expense.findAll({where:{userid:Id}});
-      res.send(data);
+      totalItems = await Expense.count({
+        where:{
+            userId:Id
+        }
+       })
+       totalItems = parseInt(totalItems);
+      let data = await Expense.findAll({where:{userid:Id},
+        offset:(page-1)*limitPerPage,
+        limit:limitPerPage
+    });
+      
+      res.json({data,Pagination:{
+         currentPage:page,
+         nextPage:page+1,
+         hasnextPage:totalItems-page*limitPerPage >=1,
+         haspreviousPage: page>1,
+         previousPage:page-1
+      }});
     }
     catch(err)
     {
@@ -122,7 +147,6 @@ exports.deleteExpense = async(req,res,next)=>{
     }
  
 }
-
 
 
 function isinvalidString(string)

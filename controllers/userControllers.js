@@ -43,6 +43,7 @@ exports.loginUser = async (req, res, next) => {
   try {
     let user = await User.findOne({ where: { email: email } });
 
+    
     if (user) {
       bcrypt.compare(password, user.password, (err, result) => {
         if (err) throw new Error("something went wrong");

@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 const User = require("../models/user");
 const sequelize = require("../util/database");
-const router = require("../routes/user");
+require("dotenv").config();
 const bcrypt = require("bcryptjs");
 
 
@@ -24,7 +24,7 @@ exports.forgotPassword = async (req, res) => {
        await password.create({id,isActive:true,userId:user.id},{transactions:t})
 
       const apiKey = client.authentications["api-key"];
-      apiKey.apiKey = "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";
+      apiKey.apiKey = process.env.SIB_API_KEY;
 
       const tranEmailApi = new Sib.TransactionalEmailsApi();
 
@@ -50,7 +50,6 @@ exports.forgotPassword = async (req, res) => {
         passwordId = id;
         res.send("ok");
     } else {
-        console.log("lfjsa;oifjs;ofis")
       throw new Error("user not found with the email id");
     }
   } catch (err) {
@@ -64,7 +63,6 @@ exports.forgotPassword = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
   const Id = req.params.id;
-  console.log(">>>>>>>>>>>>>>>>>>>>>...")
   try {
     const request = await password.findOne({ where: { id: Id } });
     // console.log(request)

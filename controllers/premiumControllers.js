@@ -3,18 +3,17 @@ const Order = require("../models/order");
 const User = require("../models/user");
 const Razorpay = require("razorpay");
 const LBoard = require("../models/leaderBoard");
- 
+require("dotenv").config();
 
 
 
 exports.getOrderID = async (req,res)=>{
 
     const rzp = new Razorpay({
-        key_id:"rzp_test_JnwPPDzL1LRfr2",
-        key_secret:"PELUpK5F2tYYzrZt2SevCOgc"
+        key_id:process.env.RAZORPAY_KEY_ID,
+        key_secret:process.env.RAZORPAY_KEY_SECRET
     })
      
-    // console.log(rzp.orders.create())
     const amount  = 2500;
 
     try{
@@ -44,7 +43,6 @@ exports.getOrderID = async (req,res)=>{
 exports.updateTransactionStatus = async (req,res)=>{
       
     const {order_id,payment_id} = req.body;
-    console.log(">>>>>>>>>>",order_id , payment_id)
     try{
         let order = await Order.findOne({where:{orderId:order_id}});
         if(!order)

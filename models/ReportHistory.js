@@ -14,3 +14,5 @@ const ForgotHistory = sequelize.define("ForgotHistory",{
 })
 
 module.exports = ForgotHistory;
+
+
