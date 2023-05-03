@@ -18,13 +18,13 @@ async function LoadItems()
     localStorage.setItem("page",1)
     limit = localStorage.getItem("limit") || 2;
     try{
-        let res =await axios.get(`http://localhost:3000/Expenses/?page=${1}&limit=${limit}`,{headers:{Authorization:token}})
+        let res =await axios.get(`http://16.16.74.189:3000/Expenses/?page=${1}&limit=${limit}`,{headers:{Authorization:token}})
          
            res.data.data.forEach(item=>{
             addTodom(item);
            })
            showpagination(res.data.Pagination);
-        let response = await axios.get("http://localhost:3000/users/ispremium",{headers:{Authorization:token}});
+        let response = await axios.get("http://16.16.74.189:3000/users/ispremium",{headers:{Authorization:token}});
         
         if(!response.data.premium)
         { 
@@ -52,7 +52,7 @@ async function addItems(e)
     }
 
     try{
-        let res = await axios.post("http://localhost:3000/Expenses",Expense,{headers:{Authorization:token}});
+        let res = await axios.post("http://16.16.74.189:3000/Expenses",Expense,{headers:{Authorization:token}});
         addTodom(res.data);
     }
     catch(err){
@@ -92,7 +92,7 @@ async function delete_item(e)
     let id = tr.getAttribute("id");
      
     try{
-      await axios.delete(`http://localhost:3000/Expenses/${id}`,{headers:{Authorization:token}})
+      await axios.delete(`http://16.16.74.189:3000/Expenses/${id}`,{headers:{Authorization:token}})
       tb.removeChild(tr)
     }
     catch(err){
@@ -109,7 +109,7 @@ function edit_item(e)
     amount.value = words[0];
     description.value = words[1];
     console.log(words)
-    axios.delete(`http://localhost:3000/${id}`)
+    axios.delete(`http://16.16.74.189:3000/${id}`)
     .then(res=>{
         ul_items.removeChild(li)
     })
@@ -119,12 +119,12 @@ function edit_item(e)
 async  function premiumbtn(e)
 {   
 
-    let response = await axios.get("http://localhost:3000/purchase/premiumMembership",{headers:{Authorization:token}});
+    let response = await axios.get("http://16.16.74.189:3000/purchase/premiumMembership",{headers:{Authorization:token}});
     let options = {
         "key":response.data.key_id,
         "order_id":response.data.order.id,
         "handler":async function (response){
-            await axios.post("http://localhost:3000/purchase/premiumMembership/UpdateTransaction",{
+            await axios.post("http://16.16.74.189:3000/purchase/premiumMembership/UpdateTransaction",{
                 order_id:options.order_id,
                 payment_id:response.razorpay_payment_id
             },{headers:{Authorization:token}})
@@ -142,7 +142,7 @@ async  function premiumbtn(e)
     rzpl.on("payment.failed",async (response)=>{
         // console.log("jsd;fjso;f;ofjw;iofwoifjwoifh;eoif");
 
-        await axios.post("http://localhost:3000/purchase/premiumMembership/StatusFail",{
+        await axios.post("http://16.16.74.189:3000/purchase/premiumMembership/StatusFail",{
             order_id:options.order_id
         },{headers:{Authorization:token}})
 
@@ -166,7 +166,7 @@ function addToLeaderBoard(item){
 
 async function showLeaderBoard(e)
 {
-   let data = await axios.get("http://localhost:3000/purchase/premiumMembership/LeaderBoard",
+   let data = await axios.get("http://16.16.74.189:3000/purchase/premiumMembership/LeaderBoard",
    {headers:{Authorization:token}}
    );
    let tb = document.getElementById("Leader_board_table")
@@ -180,7 +180,7 @@ async function showLeaderBoard(e)
 
  function downloadReport(e)
  {
-   axios.get("http://localhost:3000/Expenses/downloadReport",{headers:{Authorization:token}})
+   axios.get("http://16.16.74.189:3000/Expenses/downloadReport",{headers:{Authorization:token}})
    .then(res=>{
        let file = res.data.fileURL
        let a = document.createElement("a");
@@ -246,7 +246,7 @@ async function showLeaderBoard(e)
     
     let page = localStorage.getItem("page");
     let limit = localStorage.getItem("limit")
-    axios.get(`http://localhost:3000/Expenses/?page=${page}&limit=${limit}`,{headers:{Authorization:token}})
+    axios.get(`http://16.16.74.189:3000/Expenses/?page=${page}&limit=${limit}`,{headers:{Authorization:token}})
     .then(res=>{
         tb.innerHTML = ""
         console.log(res)

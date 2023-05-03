@@ -43,7 +43,7 @@ exports.forgotPassword = async (req, res) => {
           sender,
           to: reciever,
           subject: "hello",
-          textContent: `http://localhost:3000/password/resetPassword/${id}`,
+          textContent: `http://16.16.74.189:3000/password/resetPassword/${id}`,
         })
         await t.commit()
         userIdForPassword = user.id;

@@ -7,7 +7,7 @@
       if(ps1!==ps2)
         alert("password mismatch")
       else
-      axios.post("http://localhost:3000/password/changePassword",{password:ps1})
+      axios.post("http://16.16.74.189:3000/password/changePassword",{password:ps1})
       .then(res=>{
         console.log(res);
       })

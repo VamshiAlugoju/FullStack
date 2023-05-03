@@ -10,7 +10,7 @@ document.getElementById("submitBtnsignUp").addEventListener("click",(e)=>{
         password
     }
     //   console.log(payLoad)
-    axios.post("http://localhost:3000/users/Signup",payLoad)
+    axios.post("http://16.16.74.189:3000/users/Signup",payLoad)
     .then(res=>{
     console.log(res);
     window.location.assign("./login.html")

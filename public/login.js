@@ -16,7 +16,7 @@ let payLoad = {
 
 try{
   
-   let result = await axios.post("http://localhost:3000/users/Login",payLoad);
+   let result = await axios.post("http://16.16.74.189:3000/users/Login",payLoad);
    console.log(result.data.token)
    localStorage.setItem("token",result.data.token)
     window.location.assign("./expense/expense.html")
